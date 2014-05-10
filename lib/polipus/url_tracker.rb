@@ -1,5 +1,19 @@
 module Polipus
   module UrlTracker
+    def self.cached(options = {})
+      require "polipus/url_tracker/cached"
+      options[:size] ||= 10_000
+      options[:tracker] ||= :bloomfilter
+      options[:options] ||= {
+        :size => 1_000_000,
+        :error_rate => 0.01,
+        :key_name => 'polipus-bloomfilter',
+        :redis => Redis.current,
+        :driver => 'lua'
+      }
+      self::Cached.new options
+    end
+
     def self.bloomfilter(options = {})
       require "polipus/url_tracker/bloomfilter"
       options[:size]       ||= 1_000_000
